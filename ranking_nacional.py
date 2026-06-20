@@ -29,7 +29,7 @@ async def atualizar_ranking():
     if canal is None:
         return
 
-a@tasks.loop(minutes=30)
+@tasks.loop(minutes=30)
 async def atualizar_ranking():
 
     canal = bot.get_channel(CANAL_ID)
