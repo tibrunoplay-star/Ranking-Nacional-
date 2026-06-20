@@ -19,12 +19,16 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 @bot.event
 async def on_ready():
     print(f"Ligado como {bot.user}")
-    atualizar_ranking.start()
+
+    print("A iniciar task...")
+
+    if not atualizar_ranking.is_running():
+        atualizar_ranking.start()
 
 @tasks.loop(minutes=1)
 async def atualizar_ranking():
     print("Ranking nacional iniciado")
-
+    
     canal = bot.get_channel(CANAL_ID)
 
     if canal is None:
