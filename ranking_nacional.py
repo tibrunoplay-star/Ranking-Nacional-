@@ -21,7 +21,7 @@ async def on_ready():
     print(f"Ligado como {bot.user}")
     atualizar_ranking.start()
 
-@tasks.loop(minutes=30)
+@tasks.loop(minutes=1)
 async def atualizar_ranking():
     print("Ranking nacional iniciado")
 
