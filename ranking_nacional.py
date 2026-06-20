@@ -25,15 +25,25 @@ async def on_ready():
     if not atualizar_ranking.is_running():
         atualizar_ranking.start()
 
-@tasks.loop(minutes=1)
+@tasks.loop(minutes=30)
 async def atualizar_ranking():
+
     print("Ranking nacional iniciado")
-    
+
     canal = bot.get_channel(CANAL_ID)
 
+    print(f"Canal encontrado: {canal}")
+
     if canal is None:
+        print("ERRO: Canal não encontrado")
         return
 
+@atualizar_ranking.before_loop
+async def before_ranking():
+    print("Aguardar bot ficar pronto...")
+    await bot.wait_until_ready()
+    print("Bot pronto!")
+    
 @tasks.loop(minutes=30)
 async def atualizar_ranking():
 
