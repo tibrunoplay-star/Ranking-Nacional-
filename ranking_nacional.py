@@ -20,12 +20,19 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f"Ligado como {bot.user}")
 
-    print("A iniciar task...")
-
-    if not atualizar_ranking.is_running():
+    try:
         atualizar_ranking.start()
+        print("Task iniciada com sucesso")
+    except Exception as e:
+        print(f"Erro ao iniciar task: {e}")
 
-@tasks.loop(minutes=30)
+@atualizar_ranking.before_loop
+async def before_ranking():
+    print("À espera do bot ficar pronto...")
+    await bot.wait_until_ready()
+    print("Bot pronto. Task vai arrancar.")
+
+@tasks.loop(minutes=1)
 async def atualizar_ranking():
 
     print("Ranking nacional iniciado")
@@ -36,20 +43,6 @@ async def atualizar_ranking():
 
     if canal is None:
         print("ERRO: Canal não encontrado")
-        return
-
-@atualizar_ranking.before_loop
-async def before_ranking():
-    print("Aguardar bot ficar pronto...")
-    await bot.wait_until_ready()
-    print("Bot pronto!")
-    
-@tasks.loop(minutes=30)
-async def atualizar_ranking():
-
-    canal = bot.get_channel(CANAL_ID)
-
-    if canal is None:
         return
 
 agora = datetime.now()
