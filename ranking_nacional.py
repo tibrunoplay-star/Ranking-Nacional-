@@ -26,24 +26,18 @@ async def on_ready():
     except Exception as e:
         print(f"Erro ao iniciar task: {e}")
 
+
+@tasks.loop(minutes=30)
+async def atualizar_ranking():
+    print("Ranking nacional iniciado")
+    # resto do código
+
+
 @atualizar_ranking.before_loop
 async def before_ranking():
-    print("À espera do bot ficar pronto...")
+    print("Bot pronto!")
     await bot.wait_until_ready()
-    print("Bot pronto. Task vai arrancar.")
 
-@tasks.loop(minutes=1)
-async def atualizar_ranking():
-
-    print("Ranking nacional iniciado")
-
-    canal = bot.get_channel(CANAL_ID)
-
-    print(f"Canal encontrado: {canal}")
-
-    if canal is None:
-        print("ERRO: Canal não encontrado")
-        return
 
 agora = datetime.now()
 
