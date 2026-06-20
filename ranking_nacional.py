@@ -24,11 +24,10 @@ async def on_ready():
 @tasks.loop(minutes=30)
 async def atualizar_ranking():
 
+    canal = bot.get_channel(CANAL_ID)
 
-canal = bot.get_channel(CANAL_ID)
-
-if canal is None:
-    return
+    if canal is None:
+        return
 
 agora = datetime.now()
 
