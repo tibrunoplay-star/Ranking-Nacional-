@@ -68,5 +68,11 @@ async def atualizar_ranking():
     )
 
     try:
-        response = requests.get(...)
+        response = requests.get(url)
+        print(f"Status: {response.status_code}")
+
+    except Exception as e:
+        print(f"Erro ranking nacional: {e}")
+
+
 bot.run(TOKEN)
