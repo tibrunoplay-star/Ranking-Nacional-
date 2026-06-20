@@ -74,6 +74,4 @@ try:
 except Exception as e:
     print(f"Erro ranking nacional: {e}")
 
-    )
-
 bot.run(TOKEN)
