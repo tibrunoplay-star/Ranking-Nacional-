@@ -22,11 +22,8 @@ async def on_ready():
     atualizar_ranking.start()
 
 @tasks.loop(minutes=30)
-    async def atualizar_ranking():
-    print("Ranking nacional iniciado")
-
-@tasks.loop(minutes=30)
 async def atualizar_ranking():
+    print("Ranking nacional iniciado")
 
     canal = bot.get_channel(CANAL_ID)
 
