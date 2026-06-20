@@ -27,9 +27,17 @@ async def on_ready():
         print(f"Erro ao iniciar task: {e}")
 
 
-@tasks.loop(minutes=30)
+@tasks.loop(minutes=1)
 async def atualizar_ranking():
     print("Ranking nacional iniciado")
+    canal = bot.get_channel(CANAL_ID)
+
+    print(f"Canal encontrado: {canal}")
+    print(f"ID procurado: {CANAL_ID}")
+
+    if canal is None:
+        print("ERRO: canal não encontrado")
+        return
     # resto do código
 
 
@@ -39,40 +47,26 @@ async def before_ranking():
     await bot.wait_until_ready()
 
 
-agora = datetime.now()
+@tasks.loop(minutes=1)
+async def atualizar_ranking():
 
-ano = agora.year
-mes = agora.month
+    print("Ranking nacional iniciado")
 
-url = (
-    f"https://trucksbook.eu/company_stats/all/pt/"
-    f"{ano}/{mes}/2/1/1"
-)
+    canal = bot.get_channel(CANAL_ID)
 
-try:
+    if canal is None:
+        return
 
-    response = requests.get(
-        url,
-        timeout=20,
-        headers={"User-Agent": "Mozilla/5.0"}
+    agora = datetime.now()
+
+    ano = agora.year
+    mes = agora.month
+
+    url = (
+        f"https://trucksbook.eu/company_stats/all/pt/"
+        f"{ano}/{mes}/2/1/1"
     )
 
-    soup = BeautifulSoup(
-        response.text,
-        "html.parser"
-    )
-
-    texto = soup.get_text("\n")
-
-    linhas = [
-        l.strip()
-        for l in texto.split("\n")
-        if l.strip()
-    ]
-
-    # resto do código aqui...
-
-except Exception as e:
-    print(f"Erro ranking nacional: {e}")
-
+    try:
+        response = requests.get(...)
 bot.run(TOKEN)
