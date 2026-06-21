@@ -84,7 +84,7 @@ async def atualizar_ranking():
             if l.strip()
         ]
 
-         for i, linha in enumerate(linhas):
+        for i, linha in enumerate(linhas):
 
         if "VTC TRANS_BARBA" in linha:
 
