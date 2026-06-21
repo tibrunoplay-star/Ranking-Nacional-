@@ -21,16 +21,13 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
 print(f"Ligado como {bot.user}")
 
-```
 if not atualizar_ranking.is_running():
     atualizar_ranking.start()
     print("Task iniciada com sucesso")
-```
 
 @tasks.loop(minutes=1)
 async def atualizar_ranking():
 
-```
 print("Ranking nacional iniciado")
 
 canal = bot.get_channel(CANAL_ID)
@@ -102,7 +99,6 @@ try:
 
 except Exception as e:
     print(f"Erro ranking nacional: {e}")
-```
 
 @atualizar_ranking.before_loop
 async def before_ranking():
