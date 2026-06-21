@@ -76,68 +76,68 @@ async def atualizar_ranking():
             if l.strip()
         ]
 
-for i, linha in enumerate(linhas):
-
-    if "VTC TRANS_BARBA" in linha:
-
-        km_barba = int(
-            linhas[i + 2].replace(" ", "")
-        )
-
-        posicao = linhas[i + 4]
-
-        # Empresa em 1.º lugar
-        primeiro_nome = linhas[290]
-        primeiro_km = int(
-            linhas[292].replace(" ", "")
-        )
-
-        diferenca = primeiro_km - km_barba
-
-        mensagem = (
-            "🏆 Ranking Nacional TrucksBook 🇵🇹\n\n"
-            f"🚚 Empresa: VTC TRANS_BARBA\n"
-            f"🏅 Posição: {posicao}º\n"
-            f"📦 Quilómetros: {km_barba:,} km\n"
-            f"🥇 1.º Lugar: {primeiro_nome}\n"
-            f"📉 Diferença: {diferenca:,} km\n\n"
-            f"📅 Atualizado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
-        )
-
-        mensagem = mensagem.replace(",", ".")
-
-        print(mensagem)
-
-        global ULTIMA_MENSAGEM_ID
-
-        if ULTIMA_MENSAGEM_ID is None:
-
-            msg = await canal.send(mensagem)
-            ULTIMA_MENSAGEM_ID = msg.id
-
-        else:
-
-            try:
-
-                msg = await canal.fetch_message(
-                    ULTIMA_MENSAGEM_ID
-                )
-
-                await msg.edit(
-                    content=mensagem
-                )
-
-            except Exception:
-
-                msg = await canal.send(
-                    mensagem
-                )
-
+    for i, linha in enumerate(linhas):
+    
+        if "VTC TRANS_BARBA" in linha:
+    
+            km_barba = int(
+                linhas[i + 2].replace(" ", "")
+            )
+    
+            posicao = linhas[i + 4]
+    
+            # Empresa em 1.º lugar
+            primeiro_nome = linhas[290]
+            primeiro_km = int(
+                linhas[292].replace(" ", "")
+            )
+    
+            diferenca = primeiro_km - km_barba
+    
+            mensagem = (
+                "🏆 Ranking Nacional TrucksBook 🇵🇹\n\n"
+                f"🚚 Empresa: VTC TRANS_BARBA\n"
+                f"🏅 Posição: {posicao}º\n"
+                f"📦 Quilómetros: {km_barba:,} km\n"
+                f"🥇 1.º Lugar: {primeiro_nome}\n"
+                f"📉 Diferença: {diferenca:,} km\n\n"
+                f"📅 Atualizado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+            )
+    
+            mensagem = mensagem.replace(",", ".")
+    
+            print(mensagem)
+    
+            global ULTIMA_MENSAGEM_ID
+    
+            if ULTIMA_MENSAGEM_ID is None:
+    
+                msg = await canal.send(mensagem)
                 ULTIMA_MENSAGEM_ID = msg.id
-
-        print("Mensagem enviada!")
-
-        break
+    
+            else:
+    
+                try:
+    
+                    msg = await canal.fetch_message(
+                        ULTIMA_MENSAGEM_ID
+                    )
+    
+                    await msg.edit(
+                        content=mensagem
+                    )
+    
+                except Exception:
+    
+                    msg = await canal.send(
+                        mensagem
+                    )
+    
+                    ULTIMA_MENSAGEM_ID = msg.id
+    
+            print("Mensagem enviada!")
+    
+            break
 
     except Exception as e:
         print(f"Erro ranking nacional: {e}")
