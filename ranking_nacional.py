@@ -67,17 +67,29 @@ async def atualizar_ranking():
         f"{ano}/{mes}/2/1/1"
     )
 
-    try:
-        response = requests.get(url)
-        print(f"Status: {response.status_code}")
-        print("TRANS_BARBA" in response.text)
-        
-        if "TRANS_BARBA" in response.text:
-            print("ENCONTREI A TRANS_BARBA")
-        else:
-            print("NAO ENCONTREI A TRANS_BARBA")
-    
-    except Exception as e:
+  try:
+    response = requests.get(url)
+    print(f"Status: {response.status_code}")
+
+    soup = BeautifulSoup(
+        response.text,
+        "html.parser"
+    )
+
+    texto = soup.get_text("\n")
+
+    linhas = [
+        l.strip()
+        for l in texto.split("\n")
+        if l.strip()
+    ]
+
+    for i, linha in enumerate(linhas):
+        if "TRANS_BARBA" in linha:
+            print(f"LINHA {i}: {linha}")
+
+            for j in range(max(0, i-5), min(len(linhas), i+6)):
+                print(f"{j}: {linhas[j]}")
         print(f"Erro ranking nacional: {e}")
 
 
