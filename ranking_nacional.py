@@ -19,20 +19,20 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
-print(f"Ligado como {bot.user}")
+    print(f"Ligado como {bot.user}")
 
-if not atualizar_ranking.is_running():
-    atualizar_ranking.start()
-    print("Task iniciada com sucesso")
+    if not atualizar_ranking.is_running():
+        atualizar_ranking.start()
+        print("Task iniciada com sucesso")
 
 @tasks.loop(minutes=1)
 async def atualizar_ranking():
 
-print("Ranking nacional iniciado")
-
-canal = bot.get_channel(CANAL_ID)
-
-print(f"Canal encontrado: {canal}")
+    print("Ranking nacional iniciado")
+    
+    canal = bot.get_channel(CANAL_ID)
+    
+    print(f"Canal encontrado: {canal}")
 
 if canal is None:
     print("ERRO: canal não encontrado")
