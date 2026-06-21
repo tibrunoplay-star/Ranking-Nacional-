@@ -70,8 +70,12 @@ async def atualizar_ranking():
     try:
         response = requests.get(url)
         print(f"Status: {response.status_code}")
-        print(response.text[:1000])
-
+        print("TRANS_BARBA" in response.text)
+        
+        if "TRANS_BARBA" in response.text:
+            print("ENCONTREI A TRANS_BARBA")
+   else:
+            print("NAO ENCONTREI A TRANS_BARBA")
     except Exception as e:
         print(f"Erro ranking nacional: {e}")
 
