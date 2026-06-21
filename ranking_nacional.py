@@ -76,50 +76,68 @@ async def atualizar_ranking():
             if l.strip()
         ]
 
-        for i, linha in enumerate(linhas):
+for i, linha in enumerate(linhas):
 
-            if "VTC TRANS_BARBA" in linha:
+    if "VTC TRANS_BARBA" in linha:
 
-                km_barba = linhas[i + 2]
-                posicao = linhas[i + 4]
+        km_barba = int(
+            linhas[i + 2].replace(" ", "")
+        )
 
-                mensagem = (
-                    "🏆 **Ranking Nacional TrucksBook 🇵🇹**\n\n"
-                    f"🚚 Empresa: **VTC TRANS_BARBA**\n"
-                    f"🏅 Posição: **{posicao}º**\n"
-                    f"📦 Quilómetros: **{km_barba} km**\n\n"
-                    f"📅 Atualizado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+        posicao = linhas[i + 4]
+
+        # Empresa em 1.º lugar
+        primeiro_nome = linhas[290]
+        primeiro_km = int(
+            linhas[292].replace(" ", "")
+        )
+
+        diferenca = primeiro_km - km_barba
+
+        mensagem = (
+            "🏆 Ranking Nacional TrucksBook 🇵🇹\n\n"
+            f"🚚 Empresa: VTC TRANS_BARBA\n"
+            f"🏅 Posição: {posicao}º\n"
+            f"📦 Quilómetros: {km_barba:,} km\n"
+            f"🥇 1.º Lugar: {primeiro_nome}\n"
+            f"📉 Diferença: {diferenca:,} km\n\n"
+            f"📅 Atualizado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+        )
+
+        mensagem = mensagem.replace(",", ".")
+
+        print(mensagem)
+
+        global ULTIMA_MENSAGEM_ID
+
+        if ULTIMA_MENSAGEM_ID is None:
+
+            msg = await canal.send(mensagem)
+            ULTIMA_MENSAGEM_ID = msg.id
+
+        else:
+
+            try:
+
+                msg = await canal.fetch_message(
+                    ULTIMA_MENSAGEM_ID
                 )
 
-                print(mensagem)
+                await msg.edit(
+                    content=mensagem
+                )
 
-                if ULTIMA_MENSAGEM_ID is None:
+            except Exception:
 
-                    msg = await canal.send(mensagem)
-                    ULTIMA_MENSAGEM_ID = msg.id
+                msg = await canal.send(
+                    mensagem
+                )
 
-                else:
+                ULTIMA_MENSAGEM_ID = msg.id
 
-                    try:
+        print("Mensagem enviada!")
 
-                        msg = await canal.fetch_message(
-                            ULTIMA_MENSAGEM_ID
-                        )
-
-                        await msg.edit(
-                            content=mensagem
-                        )
-
-                    except Exception:
-
-                        msg = await canal.send(
-                            mensagem
-                        )
-
-                        ULTIMA_MENSAGEM_ID = msg.id
-
-                print("Mensagem enviada!")
-                break
+        break
 
     except Exception as e:
         print(f"Erro ranking nacional: {e}")
