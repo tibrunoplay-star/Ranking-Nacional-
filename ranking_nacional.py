@@ -87,13 +87,13 @@ async def atualizar_ranking():
                    f"📦 Quilómetros: {km_barba} km\n\n"
                    f"📅 Atualizado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
                )
-                print(mensagem)
+               print(mensagem)
 
-                await canal.send(mensagem)
+               await canal.send(mensagem)
 
-                print("Mensagem enviada!")
+               print("Mensagem enviada!")
 
-                break
+               break
 
     except Exception as e:
         print(f"Erro ranking nacional: {e}")
