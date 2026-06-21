@@ -27,20 +27,6 @@ async def on_ready():
         print(f"Erro ao iniciar task: {e}")
 
 
-@tasks.loop(minutes=1)
-async def atualizar_ranking():
-    print("Ranking nacional iniciado")
-    canal = bot.get_channel(CANAL_ID)
-
-    print(f"Canal encontrado: {canal}")
-    print(f"ID procurado: {CANAL_ID}")
-
-    if canal is None:
-        print("ERRO: canal não encontrado")
-        return
-    # resto do código
-
-
 @atualizar_ranking.before_loop
 async def before_ranking():
     print("Bot pronto!")
@@ -91,16 +77,21 @@ async def atualizar_ranking():
                 km_barba = linhas[i + 2]
                 posicao = linhas[i + 4]
 
-                km_segundo = linhas[i + 2]
-
-                diferenca = (
-                    int(km_barba.replace(" ", ""))
-                    - int(km_segundo.replace(" ", ""))
-                )
-
                 print(f"TRANS_BARBA: {km_barba} km")
                 print(f"Posição: {posicao}")
-                print(f"Diferença: {diferenca} km")
+
+                mensagem = (
+                    f"🏆 RANKING NACIONAL\n\n"
+                    f"🚚 VTC TRANS_BARBA\n"
+                    f"📍 Posição: {posicao}º\n"
+                    f"📦 KM: {km_barba}\n\n"
+                    f"🕒 Atualizado: "
+                    f"{agora.strftime('%d/%m/%Y %H:%M')}"
+                )
+
+                await canal.send(mensagem)
+
+                break
 
                 for j in range(
                     max(0, i - 5),
