@@ -45,7 +45,19 @@ async def atualizar_ranking():
             headers={"User-Agent": "Mozilla/5.0"}
         )
 
-        print(response.text[:10000])
+        with open("pagina.html", "w", encoding="utf-8") as f:
+            f.write(response.text)
+
+        print("HTML guardado")
+
+       print("BOOT DATA")
+
+       for script in soup.find_all("script"):
+           texto = script.get_text()
+
+           if texto.strip():
+              print("=" * 50)
+              print(texto[:3000])
 
     except Exception as e:
 
