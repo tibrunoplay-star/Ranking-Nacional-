@@ -71,21 +71,23 @@ async def atualizar_ranking():
             if l.strip()
         ]
 
-        # DEBUG - mostra estrutura real do HTML
-        for i, linha in enumerate(linhas):
+       # DEBUG TABELA HTML
 
-            if "TRANS_BARBA" in linha:
+       tabela = soup.find("table")
 
-                print("========== DEBUG ==========")
+       if tabela is None:
 
-                for j in range(
-                    max(0, i - 10),
-                    min(len(linhas), i + 10)
-                ):
-                    print(f"{j}: {linhas[j]}")
+           print("❌ Nenhuma tabela encontrada")
 
-                print("===========================")
+       else:
 
+            print("========== TABELA ENCONTRADA ==========")
+
+            print(
+                 tabela.prettify()[:5000]
+            )
+
+            print("======================================")
         ranking = []
 
         for i, linha in enumerate(linhas):
