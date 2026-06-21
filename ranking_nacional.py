@@ -34,9 +34,9 @@ async def atualizar_ranking():
     
     print(f"Canal encontrado: {canal}")
 
-if canal is None:
-    print("ERRO: canal não encontrado")
-    return
+    if canal is None:
+        print("ERRO: canal não encontrado")
+            return
 
 agora = datetime.now()
 
