@@ -2,6 +2,7 @@ import os
 import requests
 import psycopg
 import discord
+
 from bs4 import BeautifulSoup
 from datetime import datetime
 from discord.ext import commands, tasks
@@ -18,89 +19,94 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f"Ligado como {bot.user}")
+print(f"Ligado como {bot.user}")
 
-    try:
-        atualizar_ranking.start()
-        print("Task iniciada com sucesso")
-    except Exception as e:
-        print(f"Erro ao iniciar task: {e}")
-
-
-@atualizar_ranking.before_loop
-async def before_ranking():
-    print("Bot pronto!")
-    await bot.wait_until_ready()
-
+```
+if not atualizar_ranking.is_running():
+    atualizar_ranking.start()
+    print("Task iniciada com sucesso")
+```
 
 @tasks.loop(minutes=1)
 async def atualizar_ranking():
 
-    print("Ranking nacional iniciado")
+```
+print("Ranking nacional iniciado")
 
-    canal = bot.get_channel(CANAL_ID)
+canal = bot.get_channel(CANAL_ID)
 
-    if canal is None:
-        return
+print(f"Canal encontrado: {canal}")
 
-    agora = datetime.now()
+if canal is None:
+    print("ERRO: canal não encontrado")
+    return
 
-    ano = agora.year
-    mes = agora.month
+agora = datetime.now()
 
-    url = (
-        f"https://trucksbook.eu/company_stats/all/pt/"
-        f"{ano}/{mes}/2/1/1"
+ano = agora.year
+mes = agora.month
+
+url = (
+    f"https://trucksbook.eu/company_stats/all/pt/"
+    f"{ano}/{mes}/2/1/1"
+)
+
+try:
+
+    response = requests.get(
+        url,
+        timeout=20,
+        headers={"User-Agent": "Mozilla/5.0"}
     )
 
-    try:
-        response = requests.get(url)
-        print(f"Status: {response.status_code}")
+    print(f"Status: {response.status_code}")
 
-        soup = BeautifulSoup(
-            response.text,
-            "html.parser"
-        )
+    soup = BeautifulSoup(
+        response.text,
+        "html.parser"
+    )
 
-        texto = soup.get_text("\n")
+    texto = soup.get_text("\n")
 
-        linhas = [
-            l.strip()
-            for l in texto.split("\n")
-            if l.strip()
-        ]
+    linhas = [
+        l.strip()
+        for l in texto.split("\n")
+        if l.strip()
+    ]
 
-        for i, linha in enumerate(linhas):
+    for i, linha in enumerate(linhas):
 
-            if "VTC TRANS_BARBA" in linha:
+        if "VTC TRANS_BARBA" in linha:
 
-                km_barba = linhas[i + 2]
-                posicao = linhas[i + 4]
+            km_barba = linhas[i + 2]
+            posicao = linhas[i + 4]
 
-                print(f"TRANS_BARBA: {km_barba} km")
-                print(f"Posição: {posicao}")
+            km_num = int(
+                km_barba.replace(" ", "")
+            )
 
-                mensagem = (
-                    f"🏆 RANKING NACIONAL\n\n"
-                    f"🚚 VTC TRANS_BARBA\n"
-                    f"📍 Posição: {posicao}º\n"
-                    f"📦 KM: {km_barba}\n\n"
-                    f"🕒 Atualizado: "
-                    f"{agora.strftime('%d/%m/%Y %H:%M')}"
-                )
+            mensagem = (
+                f"🏆 Ranking Nacional\n\n"
+                f"Empresa: VTC TRANS_BARBA\n"
+                f"Posição: {posicao}\n"
+                f"KM: {km_barba}"
+            )
 
-                await canal.send(mensagem)
+            print(mensagem)
 
-                break
+            await canal.send(mensagem)
 
-                for j in range(
-                    max(0, i - 5),
-                    min(len(linhas), i + 6)
-                ):
-                    print(f"{j}: {linhas[j]}")
+            print("Mensagem enviada!")
 
-    except Exception as e:
-        print(f"Erro ranking nacional: {e}")
+            break
 
+except Exception as e:
+    print(f"Erro ranking nacional: {e}")
+```
+
+@atualizar_ranking.before_loop
+async def before_ranking():
+print("Bot pronto!")
+await bot.wait_until_ready()
 
 bot.run(TOKEN)
