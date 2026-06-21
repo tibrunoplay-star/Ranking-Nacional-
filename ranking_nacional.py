@@ -27,7 +27,7 @@ async def on_ready():
         print("Task iniciada com sucesso")
 
 
-@tasks.loop(minutes=1)
+@tasks.loop(minutes=30)
 async def atualizar_ranking():
 
     print("Ranking nacional iniciado")
