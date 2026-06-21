@@ -74,8 +74,9 @@ async def atualizar_ranking():
         
         if "TRANS_BARBA" in response.text:
             print("ENCONTREI A TRANS_BARBA")
-   else:
+        else:
             print("NAO ENCONTREI A TRANS_BARBA")
+    
     except Exception as e:
         print(f"Erro ranking nacional: {e}")
 
