@@ -50,17 +50,15 @@ async def atualizar_ranking():
             "html.parser"
         )
 
-        with open(
-            "pagina.html",
-            "w",
-            encoding="utf-8"
-        ) as f:
+       with open(
+           "pagina_completa.html",
+           "w",
+           encoding="utf-8"
+       ) as f:
 
-            f.write(response.text)
+           f.write(response.text)
 
-        print("HTML guardado")
-
-        print("BOOT DATA")
+       print("FICHEIRO GUARDADO")
 
         for script in soup.find_all("script"):
 
