@@ -55,12 +55,13 @@ async def atualizar_ranking():
             "html.parser"
         )
 
-        tabela = soup.find("table")
+       print("========== HTML ==========")
 
-        if tabela is None:
-            print("NENHUMA TABELA ENCONTRADA")
-            return
+       print(response.text[:10000])
 
+       print("========== FIM HTML ==========")
+
+       return
         print("========== TABELA ==========")
 
         print(
