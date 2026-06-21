@@ -16,7 +16,10 @@ ULTIMA_MENSAGEM_ID = 1518190560551108779
 conn = psycopg.connect(DATABASE_URL)
 
 intents = discord.Intents.default()
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(
+    command_prefix="!",
+    intents=intents
+)
 
 
 @bot.event
@@ -26,6 +29,8 @@ async def on_ready():
     if not atualizar_ranking.is_running():
         atualizar_ranking.start()
         print("Task iniciada com sucesso")
+
+
 @tasks.loop(minutes=30)
 async def atualizar_ranking():
 
@@ -51,7 +56,9 @@ async def atualizar_ranking():
         response = requests.get(
             url,
             timeout=20,
-            headers={"User-Agent": "Mozilla/5.0"}
+            headers={
+                "User-Agent": "Mozilla/5.0"
+            }
         )
 
         print(f"Status: {response.status_code}")
@@ -77,16 +84,23 @@ async def atualizar_ranking():
 
                 if linha.startswith("VTC"):
 
+                    nome = linha
+
                     km = int(
-                        linhas[i + 2].replace(" ", "")
+                        linhas[i - 4].replace(" ", "")
+                    )
+
+                    posicao = int(
+                        linhas[i - 2]
                     )
 
                     ranking.append({
-                        "nome": linha,
-                        "km": km
+                        "nome": nome,
+                        "km": km,
+                        "posicao": posicao
                     })
 
-            except:
+            except Exception:
                 pass
 
         if not ranking:
@@ -94,50 +108,45 @@ async def atualizar_ranking():
             return
 
         ranking.sort(
-            key=lambda x: x["km"],
-            reverse=True
+            key=lambda x: x["posicao"]
         )
+
+        lider = ranking[0]
 
         trans_barba = None
 
-        for pos, empresa in enumerate(ranking, start=1):
+        for empresa in ranking:
 
             if "TRANS_BARBA" in empresa["nome"]:
 
-                trans_barba = {
-                    "posicao": pos,
-                    "nome": empresa["nome"],
-                    "km": empresa["km"]
-                }
-
+                trans_barba = empresa
                 break
 
         if trans_barba is None:
-
             print("TRANS_BARBA não encontrada")
             return
-
-        lider = ranking[0]
 
         diferenca = (
             lider["km"]
             - trans_barba["km"]
         )
 
-        mensagem = "🏆 **Ranking Nacional TrucksBook 🇵🇹**\n\n"
+        mensagem = (
+            "🏆 **Ranking Nacional TrucksBook 🇵🇹**\n\n"
+        )
 
-        for pos, empresa in enumerate(ranking[:10], start=1):
+        for empresa in ranking[:10]:
 
-            emoji = "🔹"
+            pos = empresa["posicao"]
 
             if pos == 1:
                 emoji = "🥇"
-
             elif pos == 2:
                 emoji = "🥈"
-
             elif pos == 3:
                 emoji = "🥉"
+            else:
+                emoji = "🔹"
 
             mensagem += (
                 f"{emoji} {pos}º "
@@ -148,7 +157,7 @@ async def atualizar_ranking():
         mensagem += "\n"
 
         mensagem += (
-            f"🚚 **TRANS_BARBA**\n"
+            f"🚚 **{trans_barba['nome']}**\n"
             f"🏅 Posição: {trans_barba['posicao']}º\n"
             f"📦 Quilómetros: {trans_barba['km']:,} km\n"
             f"📉 Diferença para o líder: {diferenca:,} km\n\n"
@@ -185,7 +194,6 @@ async def atualizar_ranking():
         print(
             f"Erro ranking nacional: {e}"
         )
-
 
 
 @atualizar_ranking.before_loop
