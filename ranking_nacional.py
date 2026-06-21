@@ -89,7 +89,22 @@ async def atualizar_ranking():
                )
                print(mensagem)
 
-               await canal.send(mensagem)
+              global ULTIMA_MENSAGEM_ID
+
+              if ULTIMA_MENSAGEM_ID is None:
+
+                  msg = await canal.send(mensagem)
+                  ULTIMA_MENSAGEM_ID = msg.id
+
+              else:
+
+                  try:
+                      msg = await canal.fetch_message(ULTIMA_MENSAGEM_ID)
+                      await msg.edit(content=mensagem)
+                
+                  except:
+                      msg = await canal.send(mensagem)
+                      ULTIMA_MENSAGEM_ID = msg.id
 
                print("Mensagem enviada!")
 
