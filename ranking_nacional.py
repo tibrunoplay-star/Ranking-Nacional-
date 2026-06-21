@@ -11,7 +11,8 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 CANAL_ID = 1517803367462604861
-ULTIMA_MENSAGEM_ID =1518190560551108779
+ULTIMA_MENSAGEM_ID = 1518190560551108779
+
 conn = psycopg.connect(DATABASE_URL)
 
 intents = discord.Intents.default()
@@ -29,6 +30,8 @@ async def on_ready():
 
 @tasks.loop(minutes=30)
 async def atualizar_ranking():
+
+    global ULTIMA_MENSAGEM_ID
 
     print("Ranking nacional iniciado")
 
@@ -76,48 +79,47 @@ async def atualizar_ranking():
         for i, linha in enumerate(linhas):
 
             if "VTC TRANS_BARBA" in linha:
-            
-               km_barba = linhas[i + 2]
-               posicao = linhas[i + 4]
 
-               mensagem = (
-                   "🏆 Ranking Nacional TrucksBook 🇵🇹\n\n"
-                   f"🚚 Empresa: VTC TRANS_BARBA\n"
-                   f"🥈 Posição: {posicao}º\n"
-                   f"📦 Quilómetros: {km_barba} km\n\n"
-                   f"📅 Atualizado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
-               )
-               print(mensagem)
+                km_barba = linhas[i + 2]
+                posicao = linhas[i + 4]
 
-              global ULTIMA_MENSAGEM_ID
+                mensagem = (
+                    "🏆 **Ranking Nacional TrucksBook 🇵🇹**\n\n"
+                    f"🚚 Empresa: **VTC TRANS_BARBA**\n"
+                    f"🏅 Posição: **{posicao}º**\n"
+                    f"📦 Quilómetros: **{km_barba} km**\n\n"
+                    f"📅 Atualizado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+                )
 
-if ULTIMA_MENSAGEM_ID is None:
+                print(mensagem)
 
-    msg = await canal.send(mensagem)
-    ULTIMA_MENSAGEM_ID = msg.id
+                if ULTIMA_MENSAGEM_ID is None:
 
-else:
+                    msg = await canal.send(mensagem)
+                    ULTIMA_MENSAGEM_ID = msg.id
 
-    try:
+                else:
 
-        msg = await canal.fetch_message(
-            ULTIMA_MENSAGEM_ID
-        )
+                    try:
 
-        await msg.edit(
-            content=mensagem
-        )
+                        msg = await canal.fetch_message(
+                            ULTIMA_MENSAGEM_ID
+                        )
 
-    except Exception:
+                        await msg.edit(
+                            content=mensagem
+                        )
 
-        msg = await canal.send(
-            mensagem
-        )
+                    except Exception:
 
-        ULTIMA_MENSAGEM_ID = msg.id
-               print("Mensagem enviada!")
+                        msg = await canal.send(
+                            mensagem
+                        )
 
-               break
+                        ULTIMA_MENSAGEM_ID = msg.id
+
+                print("Mensagem enviada!")
+                break
 
     except Exception as e:
         print(f"Erro ranking nacional: {e}")
