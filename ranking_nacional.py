@@ -88,8 +88,8 @@ async def atualizar_ranking():
 
             if "VTC TRANS_BARBA" in linha:
 
-                km_barba = linhas[i - 4]
-                posicao = linhas[i - 2]
+                km_barba = linhas[i + 2]
+                posicao = linhas[i + 4]
 
                 km_segundo = linhas[i + 2]
 
