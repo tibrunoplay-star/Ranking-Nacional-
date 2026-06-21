@@ -31,8 +31,6 @@ async def on_ready():
 @tasks.loop(minutes=30)
 async def atualizar_ranking():
 
-    print("Ranking nacional iniciado")
-
     agora = datetime.now()
 
     url = (
@@ -44,37 +42,14 @@ async def atualizar_ranking():
 
         response = requests.get(
             url,
-            timeout=20,
             headers={"User-Agent": "Mozilla/5.0"}
         )
 
-        print(f"Status: {response.status_code}")
-
-        soup = BeautifulSoup(
-            response.text,
-            "html.parser"
-        )
-
-       print("========== HTML ==========")
-
-       print(response.text[:10000])
-
-       print("========== FIM HTML ==========")
-
-       return
-        print("========== TABELA ==========")
-
-        print(
-            tabela.prettify()[:15000]
-        )
-
-        print("========== FIM ==========")
+        print(response.text[:10000])
 
     except Exception as e:
 
-        print(
-            f"Erro ranking nacional: {e}"
-        )
+        print(e)
 
 @atualizar_ranking.before_loop
 async def before_ranking():
