@@ -102,7 +102,7 @@ except Exception as e:
 
 @atualizar_ranking.before_loop
 async def before_ranking():
-print("Bot pronto!")
-await bot.wait_until_ready()
+    print("Bot pronto!")
+    await bot.wait_until_ready()
 
 bot.run(TOKEN)
