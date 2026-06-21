@@ -77,8 +77,8 @@ async def atualizar_ranking():
 
             if "VTC TRANS_BARBA" in linha:
 
-                km_barba = linhas[i + 2]
-                posicao = linhas[i + 4]
+               km_barba = linhas[i + 2]
+               posicao = linhas[i + 4]
 
                mensagem = (
                    "🏆 Ranking Nacional TrucksBook 🇵🇹\n\n"
