@@ -11,7 +11,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 CANAL_ID = 1517803367462604861
-
+ULTIMA_MENSAGEM_ID =1518190560551108779
 conn = psycopg.connect(DATABASE_URL)
 
 intents = discord.Intents.default()
@@ -76,7 +76,7 @@ async def atualizar_ranking():
         for i, linha in enumerate(linhas):
 
             if "VTC TRANS_BARBA" in linha:
-
+            
                km_barba = linhas[i + 2]
                posicao = linhas[i + 4]
 
@@ -91,21 +91,30 @@ async def atualizar_ranking():
 
               global ULTIMA_MENSAGEM_ID
 
-              if ULTIMA_MENSAGEM_ID is None:
+if ULTIMA_MENSAGEM_ID is None:
 
-                  msg = await canal.send(mensagem)
-                  ULTIMA_MENSAGEM_ID = msg.id
+    msg = await canal.send(mensagem)
+    ULTIMA_MENSAGEM_ID = msg.id
 
-              else:
+else:
 
-                  try:
-                      msg = await canal.fetch_message(ULTIMA_MENSAGEM_ID)
-                      await msg.edit(content=mensagem)
-                
-                  except:
-                      msg = await canal.send(mensagem)
-                      ULTIMA_MENSAGEM_ID = msg.id
+    try:
 
+        msg = await canal.fetch_message(
+            ULTIMA_MENSAGEM_ID
+        )
+
+        await msg.edit(
+            content=mensagem
+        )
+
+    except Exception:
+
+        msg = await canal.send(
+            mensagem
+        )
+
+        ULTIMA_MENSAGEM_ID = msg.id
                print("Mensagem enviada!")
 
                break
