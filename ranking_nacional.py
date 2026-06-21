@@ -81,11 +81,11 @@ async def atualizar_ranking():
                 posicao = linhas[i + 4]
 
                mensagem = (
-                    "🏆 Ranking Nacional TrucksBook 🇵🇹\n\n"
-                    f"🚚 Empresa: VTC TRANS_BARBA\n"
-                    f"🥈 Posição: {posicao}º\n"
-                    f"📦 Quilómetros: {km_barba} km\n\n"
-                    f"📅 Atualizado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+                   "🏆 Ranking Nacional TrucksBook 🇵🇹\n\n"
+                   f"🚚 Empresa: VTC TRANS_BARBA\n"
+                   f"🥈 Posição: {posicao}º\n"
+                   f"📦 Quilómetros: {km_barba} km\n\n"
+                   f"📅 Atualizado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
                )
                 print(mensagem)
 
