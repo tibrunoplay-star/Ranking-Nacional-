@@ -16,10 +16,7 @@ ULTIMA_MENSAGEM_ID = 1518190560551108779
 conn = psycopg.connect(DATABASE_URL)
 
 intents = discord.Intents.default()
-bot = commands.Bot(
-    command_prefix="!",
-    intents=intents
-)
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 
 @bot.event
@@ -56,9 +53,7 @@ async def atualizar_ranking():
         response = requests.get(
             url,
             timeout=20,
-            headers={
-                "User-Agent": "Mozilla/5.0"
-            }
+            headers={"User-Agent": "Mozilla/5.0"}
         )
 
         print(f"Status: {response.status_code}")
@@ -76,45 +71,72 @@ async def atualizar_ranking():
             if l.strip()
         ]
 
+        # DEBUG - mostra estrutura real do HTML
+        for i, linha in enumerate(linhas):
+
+            if "TRANS_BARBA" in linha:
+
+                print("========== DEBUG ==========")
+
+                for j in range(
+                    max(0, i - 10),
+                    min(len(linhas), i + 10)
+                ):
+                    print(f"{j}: {linhas[j]}")
+
+                print("===========================")
+
         ranking = []
 
         for i, linha in enumerate(linhas):
 
-            if "VTC" in linha:
+            try:
 
-               print("------------")
-               print(f"LINHA {i}")
+                if linha.startswith("VTC"):
 
-              for j in range(
-                  max(0, i - 8),
-                  min(len(linhas), i + 8)
-              ):
-                  print(f"{j}: {linhas[j]}")
-            except Exception:
+                    km = int(
+                        linhas[i + 2].replace(" ", "")
+                    )
+
+                    ranking.append({
+                        "nome": linha,
+                        "km": km
+                    })
+
+            except:
                 pass
 
-        if not ranking:
+        if len(ranking) == 0:
             print("Nenhuma empresa encontrada")
             return
 
         ranking.sort(
-            key=lambda x: x["posicao"]
+            key=lambda x: x["km"],
+            reverse=True
         )
-
-        lider = ranking[0]
 
         trans_barba = None
 
-        for empresa in ranking:
+        for posicao, empresa in enumerate(
+            ranking,
+            start=1
+        ):
 
             if "TRANS_BARBA" in empresa["nome"]:
 
-                trans_barba = empresa
+                trans_barba = {
+                    "posicao": posicao,
+                    "nome": empresa["nome"],
+                    "km": empresa["km"]
+                }
+
                 break
 
         if trans_barba is None:
             print("TRANS_BARBA não encontrada")
             return
+
+        lider = ranking[0]
 
         diferenca = (
             lider["km"]
@@ -122,32 +144,32 @@ async def atualizar_ranking():
         )
 
         mensagem = (
-            "🏆 **Ranking Nacional TrucksBook 🇵🇹**\n\n"
+            "🏆 Ranking Nacional TrucksBook 🇵🇹\n\n"
         )
 
-        for empresa in ranking[:10]:
+        for posicao, empresa in enumerate(
+            ranking[:10],
+            start=1
+        ):
 
-            pos = empresa["posicao"]
-
-            if pos == 1:
+            if posicao == 1:
                 emoji = "🥇"
-            elif pos == 2:
+            elif posicao == 2:
                 emoji = "🥈"
-            elif pos == 3:
+            elif posicao == 3:
                 emoji = "🥉"
             else:
                 emoji = "🔹"
 
             mensagem += (
-                f"{emoji} {pos}º "
+                f"{emoji} {posicao}º "
                 f"{empresa['nome']} — "
                 f"{empresa['km']:,} km\n"
             )
 
-        mensagem += "\n"
-
         mensagem += (
-            f"🚚 **{trans_barba['nome']}**\n"
+            "\n"
+            f"🚚 {trans_barba['nome']}\n"
             f"🏅 Posição: {trans_barba['posicao']}º\n"
             f"📦 Quilómetros: {trans_barba['km']:,} km\n"
             f"📉 Diferença para o líder: {diferenca:,} km\n\n"
@@ -193,3 +215,4 @@ async def before_ranking():
 
 
 bot.run(TOKEN)
+
