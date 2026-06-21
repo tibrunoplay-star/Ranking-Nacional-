@@ -84,6 +84,35 @@ async def atualizar_ranking():
             if l.strip()
         ]
 
+         for i, linha in enumerate(linhas):
+
+        if "VTC TRANS_BARBA" in linha:
+
+            km_barba = linhas[i - 4]
+            posicao = linhas[i - 2]
+
+            km_segundo = linhas[i + 2]
+
+            diferenca = (
+                int(km_barba.replace(" ", ""))
+                - int(km_segundo.replace(" ", ""))
+            )
+
+            print(
+                f"TRANS_BARBA: {km_barba} km"
+            )
+
+            print(
+                f"Posição: {posicao}"
+            )
+
+            print(
+                f"Diferença: {diferenca} km"
+            )
+
+except Exception as e:
+    print(f"Erro ranking nacional: {e}")
+
         for i, linha in enumerate(linhas):
             if "TRANS_BARBA" in linha:
                 print(f"LINHA {i}: {linha}")
