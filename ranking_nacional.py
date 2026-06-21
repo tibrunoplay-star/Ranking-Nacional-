@@ -17,6 +17,7 @@ conn = psycopg.connect(DATABASE_URL)
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+
 @bot.event
 async def on_ready():
     print(f"Ligado como {bot.user}")
@@ -25,84 +26,83 @@ async def on_ready():
         atualizar_ranking.start()
         print("Task iniciada com sucesso")
 
+
 @tasks.loop(minutes=1)
 async def atualizar_ranking():
 
     print("Ranking nacional iniciado")
-    
+
     canal = bot.get_channel(CANAL_ID)
-    
+
     print(f"Canal encontrado: {canal}")
 
     if canal is None:
         print("ERRO: canal não encontrado")
-            return
+        return
 
-agora = datetime.now()
+    agora = datetime.now()
 
-ano = agora.year
-mes = agora.month
+    ano = agora.year
+    mes = agora.month
 
-url = (
-    f"https://trucksbook.eu/company_stats/all/pt/"
-    f"{ano}/{mes}/2/1/1"
-)
-
-try:
-
-    response = requests.get(
-        url,
-        timeout=20,
-        headers={"User-Agent": "Mozilla/5.0"}
+    url = (
+        f"https://trucksbook.eu/company_stats/all/pt/"
+        f"{ano}/{mes}/2/1/1"
     )
 
-    print(f"Status: {response.status_code}")
+    try:
 
-    soup = BeautifulSoup(
-        response.text,
-        "html.parser"
-    )
+        response = requests.get(
+            url,
+            timeout=20,
+            headers={"User-Agent": "Mozilla/5.0"}
+        )
 
-    texto = soup.get_text("\n")
+        print(f"Status: {response.status_code}")
 
-    linhas = [
-        l.strip()
-        for l in texto.split("\n")
-        if l.strip()
-    ]
+        soup = BeautifulSoup(
+            response.text,
+            "html.parser"
+        )
 
-    for i, linha in enumerate(linhas):
+        texto = soup.get_text("\n")
 
-        if "VTC TRANS_BARBA" in linha:
+        linhas = [
+            l.strip()
+            for l in texto.split("\n")
+            if l.strip()
+        ]
 
-            km_barba = linhas[i + 2]
-            posicao = linhas[i + 4]
+        for i, linha in enumerate(linhas):
 
-            km_num = int(
-                km_barba.replace(" ", "")
-            )
+            if "VTC TRANS_BARBA" in linha:
 
-            mensagem = (
-                f"🏆 Ranking Nacional\n\n"
-                f"Empresa: VTC TRANS_BARBA\n"
-                f"Posição: {posicao}\n"
-                f"KM: {km_barba}"
-            )
+                km_barba = linhas[i + 2]
+                posicao = linhas[i + 4]
 
-            print(mensagem)
+                mensagem = (
+                    f"🏆 Ranking Nacional\n\n"
+                    f"Empresa: VTC TRANS_BARBA\n"
+                    f"Posição: {posicao}\n"
+                    f"KM: {km_barba}"
+                )
 
-            await canal.send(mensagem)
+                print(mensagem)
 
-            print("Mensagem enviada!")
+                await canal.send(mensagem)
 
-            break
+                print("Mensagem enviada!")
 
-except Exception as e:
-    print(f"Erro ranking nacional: {e}")
+                break
+
+    except Exception as e:
+        print(f"Erro ranking nacional: {e}")
+
 
 @atualizar_ranking.before_loop
 async def before_ranking():
     print("Bot pronto!")
     await bot.wait_until_ready()
+
 
 bot.run(TOKEN)
