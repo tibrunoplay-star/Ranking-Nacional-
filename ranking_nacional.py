@@ -80,26 +80,16 @@ async def atualizar_ranking():
 
         for i, linha in enumerate(linhas):
 
-            try:
+            if "VTC" in linha:
 
-                if linha.startswith("VTC"):
+               print("------------")
+               print(f"LINHA {i}")
 
-                    nome = linha
-
-                    km = int(
-                        linhas[i - 4].replace(" ", "")
-                    )
-
-                    posicao = int(
-                        linhas[i - 2]
-                    )
-
-                    ranking.append({
-                        "nome": nome,
-                        "km": km,
-                        "posicao": posicao
-                    })
-
+              for j in range(
+                  max(0, i - 8),
+                  min(len(linhas), i + 8)
+              ):
+                  print(f"{j}: {linhas[j]}")
             except Exception:
                 pass
 
