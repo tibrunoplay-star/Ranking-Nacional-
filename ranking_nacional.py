@@ -80,13 +80,13 @@ async def atualizar_ranking():
                 km_barba = linhas[i + 2]
                 posicao = linhas[i + 4]
 
-                mensagem = (
-                    f"🏆 Ranking Nacional\n\n"
-                    f"Empresa: VTC TRANS_BARBA\n"
-                    f"Posição: {posicao}\n"
-                    f"KM: {km_barba}"
-                )
-
+               mensagem = (
+                    "🏆 Ranking Nacional TrucksBook 🇵🇹\n\n"
+                    f"🚚 Empresa: VTC TRANS_BARBA\n"
+                    f"🥈 Posição: {posicao}º\n"
+                    f"📦 Quilómetros: {km_barba} km\n\n"
+                    f"📅 Atualizado: {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+               )
                 print(mensagem)
 
                 await canal.send(mensagem)
